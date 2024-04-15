@@ -51,6 +51,8 @@ COPY --from=buildstage /usr/local/bin/ctb-* build/usr/local/bin/
 
 WORKDIR /data
 
+CMD ["bash"]
+
 # Setup runtime packages and env
 # RUN set -x && apt-get update && \
 #   apt-get install -y --no-install-recommends $RUNTIME_PACKAGES && \
