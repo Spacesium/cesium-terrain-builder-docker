@@ -46,9 +46,9 @@ COPY --from=buildstage /usr/local/include/ctb /usr/local/include/ctb
 COPY --from=buildstage /usr/local/lib/libctb.so /usr/local/lib/libctb.so
 COPY --from=buildstage /usr/local/bin/ctb-* /usr/local/bin/
 
-COPY --from=buildstage /usr/local/include/ctb build/usr/local/include/ctb
-COPY --from=buildstage /usr/local/lib/libctb.so build/usr/local/lib/libctb.so
-COPY --from=buildstage /usr/local/bin/ctb-* build/usr/local/bin/
+COPY --from=buildstage /usr/local/include/ctb /ctb-build/usr/local/include/ctb
+COPY --from=buildstage /usr/local/lib/libctb.so /ctb-build/usr/local/lib/libctb.so
+COPY --from=buildstage /usr/local/bin/ctb-* /ctb-build/usr/local/bin/
 
 COPY --from=buildstage /ctbtemp /ctbtemp
 
