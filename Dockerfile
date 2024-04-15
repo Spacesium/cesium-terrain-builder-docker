@@ -2,8 +2,6 @@
 FROM debian:buster AS fetchstage
 ARG FETCH_PACKAGES='git ca-certificates'
 
-RUN mkdir /ctbtemp /ctbtemp/build
-
 WORKDIR /ctbtemp
 
 # Setup fetch packages
@@ -20,6 +18,8 @@ RUN set -x && \
 FROM debian:buster AS buildstage
 ARG BUILD_PACKAGES='cmake build-essential libgdal-dev'
 COPY --from=fetchstage /ctbtemp/cesium-terrain-builder /ctbtemp/cesium-terrain-builder
+
+
 WORKDIR /ctbtemp/cesium-terrain-builder
 
 # Steup build packages
@@ -49,6 +49,8 @@ COPY --from=buildstage /usr/local/bin/ctb-* /usr/local/bin/
 COPY --from=buildstage /usr/local/include/ctb build/usr/local/include/ctb
 COPY --from=buildstage /usr/local/lib/libctb.so build/usr/local/lib/libctb.so
 COPY --from=buildstage /usr/local/bin/ctb-* build/usr/local/bin/
+
+COPY --from=buildstage /ctbtemp /ctbtemp
 
 WORKDIR /data
 
