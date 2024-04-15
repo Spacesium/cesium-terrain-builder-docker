@@ -32,11 +32,11 @@ RUN set -x && \
   mkdir build && cd build && cmake .. && make install .
 
 # Cleanup
-RUN  set -x && \
-  apt-get purge -y --auto-remove $BUILD_PACKAGES && \
-  rm -rf /var/lib/apt/lists/* && \
-  rm -rf /tmp/* && \
-  rm -rf /ctbtemp
+# RUN  set -x && \
+#   apt-get purge -y --auto-remove $BUILD_PACKAGES && \
+#   rm -rf /var/lib/apt/lists/* && \
+#   rm -rf /tmp/* && \
+#   rm -rf /ctbtemp
 
 # Runtime stage ###############################################################
 FROM debian:buster-slim
