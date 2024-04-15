@@ -54,17 +54,17 @@ COPY --from=buildstage /ctbtemp /ctbtemp
 
 WORKDIR /data
 
-CMD ["bash"]
+# CMD ["bash"]
 
 # Setup runtime packages and env
-# RUN set -x && apt-get update && \
-#   apt-get install -y --no-install-recommends $RUNTIME_PACKAGES && \
-#   ldconfig && \
-#   echo 'shopt -s globstar' >> ~/.bashrc && \
-#   echo 'alias ..="cd .."' >> ~/.bashrc && \
-#   echo 'alias l="ls -CF --group-directories-first --color=auto"' >> ~/.bashrc && \
-#   echo 'alias ll="ls -lFh --group-directories-first --color=auto"' >> ~/.bashrc && \
-#   echo 'alias lla="ls -laFh --group-directories-first  --color=auto"' >> ~/.bashrc
+RUN set -x && apt-get update && \
+  apt-get install -y --no-install-recommends $RUNTIME_PACKAGES && \
+  ldconfig && \
+  echo 'shopt -s globstar' >> ~/.bashrc && \
+  echo 'alias ..="cd .."' >> ~/.bashrc && \
+  echo 'alias l="ls -CF --group-directories-first --color=auto"' >> ~/.bashrc && \
+  echo 'alias ll="ls -lFh --group-directories-first --color=auto"' >> ~/.bashrc && \
+  echo 'alias lla="ls -laFh --group-directories-first  --color=auto"' >> ~/.bashrc
 
 # CMD ["bash"]
 
