@@ -66,7 +66,7 @@ RUN set -x && apt-get update && \
   echo 'alias ll="ls -lFh --group-directories-first --color=auto"' >> ~/.bashrc && \
   echo 'alias lla="ls -laFh --group-directories-first  --color=auto"' >> ~/.bashrc
 
-# CMD ["bash"]
+CMD ["bash"]
 
 # Labels ######################################################################
 # LABEL maintainer="Bruno Willenborg"
