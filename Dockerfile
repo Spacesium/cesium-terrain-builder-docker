@@ -9,10 +9,14 @@ RUN set -x && apt-get update && \
   apt-get install -y --no-install-recommends $FETCH_PACKAGES
 
 # Fetch
-RUN set -x && \
-  git clone -b master-quantized-mesh --depth 1 \
-    https://github.com/ahuarte47/cesium-terrain-builder.git && \
-  cd cesium-terrain-builder
+# RUN set -x && \
+#   git clone -b master-quantized-mesh --depth 1 \
+#     https://github.com/ahuarte47/cesium-terrain-builder.git && \
+#   cd cesium-terrain-builder
+
+COPY ./cesium-terrain-builder cesium-terrain-builder
+
+RUN cd cesium-terrain-builder
 
 # Build stage #################################################################
 FROM debian:buster AS buildstage
