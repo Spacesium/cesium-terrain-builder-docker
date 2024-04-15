@@ -1,9 +1,10 @@
 # Fetch stage #################################################################
 FROM debian:buster AS fetchstage
 ARG FETCH_PACKAGES='git ca-certificates'
-WORKDIR /ctbtemp
 
-RUN mkdir build
+RUN mkdir /ctbtemp /ctbtemp/build
+
+WORKDIR /ctbtemp
 
 # Setup fetch packages
 RUN set -x && apt-get update && \
