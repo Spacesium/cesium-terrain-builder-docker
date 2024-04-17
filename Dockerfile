@@ -23,10 +23,9 @@ FROM debian:buster AS buildstage
 ARG BUILD_PACKAGES='cmake build-essential libgdal-dev'
 COPY --from=fetchstage /ctbtemp/cesium-terrain-builder /ctbtemp/cesium-terrain-builder
 
-
 WORKDIR /ctbtemp/cesium-terrain-builder
 
-# Steup build packages
+# Setup build packages
 RUN set -x && \
   apt-get update && \
   apt-get install -y --no-install-recommends $BUILD_PACKAGES
@@ -45,9 +44,16 @@ RUN set -x && \
 
 # Runtime stage ###############################################################
 FROM debian:buster-slim
+
 ARG RUNTIME_PACKAGES='gdal-bin'
+
+# Copy headers
 COPY --from=buildstage /usr/local/include/ctb /usr/local/include/ctb
+
+# Copy Shared Object (.so) file 
 COPY --from=buildstage /usr/local/lib/libctb.so /usr/local/lib/libctb.so
+
+# Copy executables to /usr/local/bin
 COPY --from=buildstage /usr/local/bin/ctb-* /usr/local/bin/
 
 COPY --from=buildstage /usr/local/include/ctb /ctb-build/usr/local/include/ctb
@@ -56,19 +62,17 @@ COPY --from=buildstage /usr/local/bin/ctb-* /ctb-build/usr/local/bin/
 
 COPY --from=buildstage /ctbtemp /ctbtemp
 
-WORKDIR /data
+# WORKDIR /data
 
-# CMD ["bash"]
-
-# Setup runtime packages and env
-RUN set -x && apt-get update && \
-  apt-get install -y --no-install-recommends $RUNTIME_PACKAGES && \
-  ldconfig && \
-  echo 'shopt -s globstar' >> ~/.bashrc && \
-  echo 'alias ..="cd .."' >> ~/.bashrc && \
-  echo 'alias l="ls -CF --group-directories-first --color=auto"' >> ~/.bashrc && \
-  echo 'alias ll="ls -lFh --group-directories-first --color=auto"' >> ~/.bashrc && \
-  echo 'alias lla="ls -laFh --group-directories-first  --color=auto"' >> ~/.bashrc
+# # Setup runtime packages and env
+# RUN set -x && apt-get update && \
+#   apt-get install -y --no-install-recommends $RUNTIME_PACKAGES && \
+#   ldconfig && \
+#   echo 'shopt -s globstar' >> ~/.bashrc && \
+#   echo 'alias ..="cd .."' >> ~/.bashrc && \
+#   echo 'alias l="ls -CF --group-directories-first --color=auto"' >> ~/.bashrc && \
+#   echo 'alias ll="ls -lFh --group-directories-first --color=auto"' >> ~/.bashrc && \
+#   echo 'alias lla="ls -laFh --group-directories-first  --color=auto"' >> ~/.bashrc
 
 CMD ["bash"]
 
