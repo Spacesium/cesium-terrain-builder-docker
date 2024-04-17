@@ -2,7 +2,7 @@
 FROM debian:buster AS fetchstage
 ARG FETCH_PACKAGES='git ca-certificates'
 
-WORKDIR /ctbtemp
+WORKDIR /spctemp
 
 # Setup fetch packages
 RUN set -x && apt-get update && \
@@ -21,9 +21,9 @@ RUN cd cesium-terrain-builder
 # Build stage #################################################################
 FROM debian:buster AS buildstage
 ARG BUILD_PACKAGES='cmake build-essential libgdal-dev'
-COPY --from=fetchstage /ctbtemp/cesium-terrain-builder /ctbtemp/cesium-terrain-builder
+COPY --from=fetchstage /spctemp/cesium-terrain-builder /spctemp/cesium-terrain-builder
 
-WORKDIR /ctbtemp/cesium-terrain-builder
+WORKDIR /spctemp/cesium-terrain-builder
 
 # Setup build packages
 RUN set -x && \
@@ -40,7 +40,7 @@ RUN set -x && \
 #   apt-get purge -y --auto-remove $BUILD_PACKAGES && \
 #   rm -rf /var/lib/apt/lists/* && \
 #   rm -rf /tmp/* && \
-#   rm -rf /ctbtemp
+#   rm -rf /spctemp
 
 # Runtime stage ###############################################################
 FROM debian:buster-slim
@@ -56,23 +56,23 @@ COPY --from=buildstage /usr/local/lib/libctb.so /usr/local/lib/libctb.so
 # Copy executables to /usr/local/bin
 COPY --from=buildstage /usr/local/bin/ctb-* /usr/local/bin/
 
-COPY --from=buildstage /usr/local/include/ctb /ctb-build/usr/local/include/ctb
-COPY --from=buildstage /usr/local/lib/libctb.so /ctb-build/usr/local/lib/libctb.so
-COPY --from=buildstage /usr/local/bin/ctb-* /ctb-build/usr/local/bin/
+COPY --from=buildstage /usr/local/include/ctb /spc-build/usr/local/include/ctb
+COPY --from=buildstage /usr/local/lib/libctb.so /spc-build/usr/local/lib/libctb.so
+COPY --from=buildstage /usr/local/bin/spc-* /spc-build/usr/local/bin/
 
-COPY --from=buildstage /ctbtemp /ctbtemp
+COPY --from=buildstage /spctemp /spctemp
 
-# WORKDIR /data
+WORKDIR /data
 
-# # Setup runtime packages and env
-# RUN set -x && apt-get update && \
-#   apt-get install -y --no-install-recommends $RUNTIME_PACKAGES && \
-#   ldconfig && \
-#   echo 'shopt -s globstar' >> ~/.bashrc && \
-#   echo 'alias ..="cd .."' >> ~/.bashrc && \
-#   echo 'alias l="ls -CF --group-directories-first --color=auto"' >> ~/.bashrc && \
-#   echo 'alias ll="ls -lFh --group-directories-first --color=auto"' >> ~/.bashrc && \
-#   echo 'alias lla="ls -laFh --group-directories-first  --color=auto"' >> ~/.bashrc
+# Setup runtime packages and env
+RUN set -x && apt-get update && \
+  apt-get install -y --no-install-recommends $RUNTIME_PACKAGES && \
+  ldconfig && \
+  echo 'shopt -s globstar' >> ~/.bashrc && \
+  echo 'alias ..="cd .."' >> ~/.bashrc && \
+  echo 'alias l="ls -CF --group-directories-first --color=auto"' >> ~/.bashrc && \
+  echo 'alias ll="ls -lFh --group-directories-first --color=auto"' >> ~/.bashrc && \
+  echo 'alias lla="ls -laFh --group-directories-first  --color=auto"' >> ~/.bashrc
 
 CMD ["bash"]
 
